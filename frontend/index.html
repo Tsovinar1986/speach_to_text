@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="hy">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Speech to Text</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="bg-blob blob-1"></div>
+  <div class="bg-blob blob-2"></div>
+
+  <main class="card">
+    <header class="header">
+      <div class="logo">🎙️</div>
+      <h1>Speech to Text</h1>
+      <p class="subtitle">Վերբեռնիր վիդեո կամ աուդիո ֆայլ &mdash; ստացիր տեքստը մի քանի վայրկյանում</p>
+    </header>
+
+    <label id="dropzone" for="fileInput" class="dropzone">
+      <input type="file" id="fileInput" accept="audio/*,video/*" hidden>
+      <div class="dropzone-icon">⬆️</div>
+      <div class="dropzone-text">
+        <strong>Սեղմիր՝ ընտրելու</strong> կամ քաշիր ֆայլը այստեղ
+      </div>
+      <div class="dropzone-hint">MP3, WAV, MP4, MOV, M4A և այլն</div>
+    </label>
+
+    <div id="fileInfo" class="file-info hidden">
+      <span class="file-icon">📄</span>
+      <span id="fileName" class="file-name"></span>
+      <button id="clearFile" class="clear-btn" type="button" aria-label="Remove file">✕</button>
+    </div>
+
+    <div class="controls">
+      <label class="lang-label" for="langSelect">Լեզու</label>
+      <select id="langSelect">
+        <option value="">Ինքնաբերաբար հայտնաբերել</option>
+        <option value="hy">Հայերեն</option>
+        <option value="en">English</option>
+        <option value="ru">Русский</option>
+      </select>
+      <button id="submitBtn" class="submit-btn" type="button" disabled>
+        <span id="submitLabel">Ստանալ տեքստը</span>
+      </button>
+    </div>
+
+    <div id="progress" class="progress hidden">
+      <div class="spinner"></div>
+      <span id="progressText">Մշակվում է&hellip; սա կարող է տևել մի քանի րոպե առաջին անգամ</span>
+    </div>
+
+    <div id="errorBox" class="error-box hidden"></div>
+
+    <section id="resultBox" class="result-box hidden">
+      <div class="result-header">
+        <span class="result-label">Արդյունք <span id="detectedLang" class="lang-pill"></span></span>
+        <button id="copyBtn" class="copy-btn" type="button">Պատճենել</button>
+      </div>
+      <textarea id="resultText" class="result-text" readonly></textarea>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
