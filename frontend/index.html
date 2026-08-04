@@ -14,22 +14,35 @@
     <header class="header">
       <div class="logo">🎙️</div>
       <h1>Speech to Text</h1>
-      <p class="subtitle">Վերբեռնիր վիդեո կամ աուդիո ֆայլ &mdash; ստացիր տեքստը մի քանի վայրկյանում</p>
+      <p class="subtitle">Վերբեռնիր վիդեո/աուդիո/PDF, կամ դիր հղում &mdash; ստացիր տեքստը մի քանի վայրկյանում</p>
     </header>
 
-    <label id="dropzone" for="fileInput" class="dropzone">
-      <input type="file" id="fileInput" accept="audio/*,video/*" hidden>
-      <div class="dropzone-icon">⬆️</div>
-      <div class="dropzone-text">
-        <strong>Սեղմիր՝ ընտրելու</strong> կամ քաշիր ֆայլը այստեղ
-      </div>
-      <div class="dropzone-hint">MP3, WAV, MP4, MOV, M4A և այլն</div>
-    </label>
+    <div class="tabs" role="tablist">
+      <button id="tabFile" class="tab-btn active" type="button">Ֆայլ</button>
+      <button id="tabLink" class="tab-btn" type="button">Հղում</button>
+    </div>
 
-    <div id="fileInfo" class="file-info hidden">
-      <span class="file-icon">📄</span>
-      <span id="fileName" class="file-name"></span>
-      <button id="clearFile" class="clear-btn" type="button" aria-label="Remove file">✕</button>
+    <div id="filePane">
+      <label id="dropzone" for="fileInput" class="dropzone">
+        <input type="file" id="fileInput" accept="audio/*,video/*,.pdf,application/pdf" hidden>
+        <div class="dropzone-icon">⬆️</div>
+        <div class="dropzone-text">
+          <strong>Սեղմիր՝ ընտրելու</strong> կամ քաշիր ֆայլը այստեղ
+        </div>
+        <div class="dropzone-hint">MP3, WAV, MP4, MOV, M4A, PDF և այլն</div>
+      </label>
+
+      <div id="fileInfo" class="file-info hidden">
+        <span class="file-icon">📄</span>
+        <span id="fileName" class="file-name"></span>
+        <button id="clearFile" class="clear-btn" type="button" aria-label="Remove file">✕</button>
+      </div>
+    </div>
+
+    <div id="linkPane" class="hidden">
+      <input id="urlInput" class="url-input" type="url" inputmode="url" autocomplete="off"
+             placeholder="https://www.instagram.com/reel/... կամ TikTok/YouTube հղում">
+      <div class="dropzone-hint link-hint">Instagram Reels, TikTok, YouTube Shorts և այլ հանրային հղումներ</div>
     </div>
 
     <div class="controls">

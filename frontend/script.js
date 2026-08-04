@@ -1,3 +1,9 @@
+const tabFile = document.getElementById("tabFile");
+const tabLink = document.getElementById("tabLink");
+const filePane = document.getElementById("filePane");
+const linkPane = document.getElementById("linkPane");
+const urlInput = document.getElementById("urlInput");
+
 const dropzone = document.getElementById("dropzone");
 const fileInput = document.getElementById("fileInput");
 const fileInfo = document.getElementById("fileInfo");
@@ -14,19 +20,39 @@ const detectedLang = document.getElementById("detectedLang");
 const copyBtn = document.getElementById("copyBtn");
 
 let selectedFile = null;
+let mode = "file"; // "file" | "link"
+
+function updateSubmitState() {
+  const hasInput = mode === "file" ? !!selectedFile : urlInput.value.trim().length > 0;
+  submitBtn.disabled = !hasInput;
+}
+
+function setMode(newMode) {
+  mode = newMode;
+  tabFile.classList.toggle("active", mode === "file");
+  tabLink.classList.toggle("active", mode === "link");
+  filePane.classList.toggle("hidden", mode !== "file");
+  linkPane.classList.toggle("hidden", mode !== "link");
+  hideError();
+  resultBox.classList.add("hidden");
+  updateSubmitState();
+}
+
+tabFile.addEventListener("click", () => setMode("file"));
+tabLink.addEventListener("click", () => setMode("link"));
+urlInput.addEventListener("input", updateSubmitState);
 
 function setFile(file) {
   selectedFile = file;
   if (file) {
     fileName.textContent = file.name;
     fileInfo.classList.remove("hidden");
-    submitBtn.disabled = false;
   } else {
     fileInfo.classList.add("hidden");
-    submitBtn.disabled = true;
   }
   hideError();
   resultBox.classList.add("hidden");
+  updateSubmitState();
 }
 
 fileInput.addEventListener("change", () => {
@@ -72,20 +98,27 @@ function hideError() {
 }
 
 function setLoading(isLoading) {
-  submitBtn.disabled = isLoading || !selectedFile;
+  updateSubmitState();
+  if (isLoading) submitBtn.disabled = true;
   progress.classList.toggle("hidden", !isLoading);
   submitLabel.textContent = isLoading ? "Մշակվում է..." : "Ստանալ տեքստը";
 }
 
 submitBtn.addEventListener("click", async () => {
-  if (!selectedFile) return;
+  const url = urlInput.value.trim();
+  if (mode === "file" && !selectedFile) return;
+  if (mode === "link" && !url) return;
 
   hideError();
   resultBox.classList.add("hidden");
   setLoading(true);
 
   const formData = new FormData();
-  formData.append("file", selectedFile);
+  if (mode === "file") {
+    formData.append("file", selectedFile);
+  } else {
+    formData.append("url", url);
+  }
 
   const params = new URLSearchParams();
   if (langSelect.value) {
