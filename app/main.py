@@ -6,7 +6,6 @@ from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from .armenian_asr import transcribe_armenian
 from .ocr import extract_pdf_text
 from .transcription import transcribe_file
 
@@ -46,11 +45,6 @@ async def speech_to_text(file: UploadFile = File(...), language: str | None = No
         if Path(tmp_path).suffix.lower() == ".pdf":
             text = extract_pdf_text(tmp_path)
             detected_language = None
-        elif language == "hy":
-            # Armenian-specific model (NVIDIA FastConformer-Hybrid Large) beats
-            # whisper's accuracy for Armenian but only handles Armenian.
-            text = transcribe_armenian(tmp_path)
-            detected_language = "hy"
         else:
             text, detected_language = transcribe_file(tmp_path, language=language)
     except HTTPException:

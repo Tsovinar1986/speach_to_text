@@ -5,4 +5,3 @@ faster-whisper
 PyMuPDF
 pytesseract
 Pillow
-nemo_toolkit[asr]
