@@ -6,6 +6,7 @@ from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
+from . import armenian_crispasr
 from .ocr import extract_pdf_text
 from .transcription import transcribe_file
 
@@ -45,6 +46,11 @@ async def speech_to_text(file: UploadFile = File(...), language: str | None = No
         if Path(tmp_path).suffix.lower() == ".pdf":
             text = extract_pdf_text(tmp_path)
             detected_language = None
+        elif language == "hy" and armenian_crispasr.is_available():
+            # Optional faster/lighter path (GGUF + CrispASR) when set up via
+            # scripts/build_crispasr.sh; otherwise falls through to whisper below.
+            text = armenian_crispasr.transcribe_armenian_crispasr(tmp_path)
+            detected_language = "hy"
         else:
             text, detected_language = transcribe_file(tmp_path, language=language)
     except HTTPException:
