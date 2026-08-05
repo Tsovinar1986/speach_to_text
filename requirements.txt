@@ -2,7 +2,7 @@ fastapi
 uvicorn[standard]
 python-multipart
 faster-whisper
-yt-dlp
 PyMuPDF
 pytesseract
 Pillow
+nemo_toolkit[asr]
