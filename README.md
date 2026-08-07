@@ -3,20 +3,14 @@
 Standalone speech-to-text API for video. Send it a video file, get back JSON with the transcribed text.
 Uses [faster-whisper](https://github.com/SYSTRAN/faster-whisper) (OpenAI Whisper, no training/fine-tuning needed) — Armenian is one of the ~99 languages it supports out of the box. Any video format ffmpeg can read (MP4, MOV, MKV, AVI, WEBM, etc.) is supported.
 
-Optionally, `language=hy` can instead use [CrispASR](https://github.com/CrispStrobe/CrispASR) (built with only its `qwen3` backend) running a GGUF-quantized [Qwen3-ASR-0.6B](https://huggingface.co/cstr/qwen3-asr-0.6b-GGUF) model — a small C++ binary, no PyTorch. This is fully optional: if it isn't built, `language=hy` just uses whisper like every other language, no errors, no setup required.
+Optionally, `language=hy` can instead use [Qwen3-ASR-0.6B](https://huggingface.co/Qwen/Qwen3-ASR-0.6B-hf) (loaded directly via `transformers`, no separate build step). **This is off by default** — Armenian is not among Qwen3-ASR's officially documented supported languages (30 languages + 22 Chinese dialects), so faster-whisper is the better-tested option for Armenian. Opt in with `QWEN_ARMENIAN=1` once you've verified transcription quality is acceptable for your use case.
+
+The app also exposes a text-to-speech endpoint for Western Armenian using [facebook/mms-tts-hyw](https://huggingface.co/facebook/mms-tts-hyw) (Meta MMS).
 
 ## System dependencies
 
 Besides Python, install:
 - **ffmpeg** — needed by whisper for media handling. macOS: `brew install ffmpeg`. Windows: `winget install ffmpeg` (or download from ffmpeg.org and add to PATH). Linux: `apt install ffmpeg`.
-
-### Optional: faster Armenian path (CrispASR)
-
-```
-./scripts/build_crispasr.sh
-```
-
-Clones and builds [CrispASR](https://github.com/CrispStrobe/CrispASR) into `./crispasr` (needs `cmake` and a C++17 compiler; only the `qwen3` ASR backend is kept, all other backends removed from the build) and downloads the Qwen3-ASR GGUF model into `./models`. Once built, `language=hy` requests automatically use it instead of whisper — nothing else to configure. Skip this step entirely if you don't need it; the API works fine without it.
 
 ## Run
 
@@ -45,7 +39,7 @@ make.bat clean
 
 The first request downloads the Whisper model (`medium` by default), so it can take a while. The server then listens on `http://localhost:8008`.
 
-A small web UI is served at `http://localhost:8008/` — pick a file, hit the button, get the text back, no console needed.
+A small web UI is served at `http://localhost:8008/` — pick a file, hit the button, get the text back, no console needed. It also has a text-to-speech box for Western Armenian.
 
 ## API
 
@@ -61,14 +55,24 @@ Response:
 { "text": "...", "language": "hy" }
 ```
 
+`POST /api/text-to-speech` — JSON body `{ "text": "..." }`, returns `audio/wav` (Western Armenian, via facebook/mms-tts-hyw).
+
+```
+curl -X POST http://localhost:8008/api/text-to-speech \
+  -H "Content-Type: application/json" \
+  -d '{"text": "Բարև ձեզ"}' \
+  --output speech.wav
+```
+
 ## Configuration
 
 Environment variables:
 - `WHISPER_MODEL_SIZE` (default `medium`) — e.g. `small`, `large-v3` for higher accuracy.
 - `WHISPER_DEVICE` (default `cpu`) — set to `cuda` if a GPU is available.
 - `MAX_UPLOAD_MB` (default `500`) — max upload size.
-- `CRISPASR_BIN` (default `./crispasr/build/bin/crispasr`) — path to the CrispASR binary, if built.
-- `CRISPASR_MODEL` (default `./models/qwen3-asr-0.6b-q4_k.gguf`) — path to the Qwen3-ASR GGUF model (auto-downloaded on first use if missing).
+- `QWEN_ARMENIAN` (default `0`) — set to `1` to use Qwen3-ASR instead of whisper for `language=hy` requests. See the caveat above.
+- `QWEN_ASR_MODEL` (default `Qwen/Qwen3-ASR-0.6B-hf`) — e.g. `Qwen/Qwen3-ASR-1.7B-hf` for the larger variant.
+- `TTS_MODEL` (default `facebook/mms-tts-hyw`) — text-to-speech model.
 
 ## License
 
