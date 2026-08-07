@@ -1,9 +1,7 @@
 # speach_to_text
 
 Standalone speech-to-text API for video. Send it a video file, get back JSON with the transcribed text.
-Uses [faster-whisper](https://github.com/SYSTRAN/faster-whisper) (OpenAI Whisper, no training/fine-tuning needed) — Armenian is one of the ~99 languages it supports out of the box. Any video format ffmpeg can read (MP4, MOV, MKV, AVI, WEBM, etc.) is supported.
-
-Optionally, `language=hy` can instead use [Qwen3-ASR-0.6B](https://huggingface.co/Qwen/Qwen3-ASR-0.6B-hf) (loaded directly via `transformers`, no separate build step). **This is off by default** — Armenian is not among Qwen3-ASR's officially documented supported languages (30 languages + 22 Chinese dialects), so faster-whisper is the better-tested option for Armenian. Opt in with `QWEN_ARMENIAN=1` once you've verified transcription quality is acceptable for your use case.
+Uses [faster-whisper](https://github.com/SYSTRAN/faster-whisper) (OpenAI Whisper, no training/fine-tuning needed) for every language, including Armenian — one of the ~99 languages it supports out of the box. Any video format ffmpeg can read (MP4, MOV, MKV, AVI, WEBM, etc.) is supported.
 
 The app also exposes a text-to-speech endpoint for Western Armenian using [facebook/mms-tts-hyw](https://huggingface.co/facebook/mms-tts-hyw) (Meta MMS).
 
@@ -70,8 +68,6 @@ Environment variables:
 - `WHISPER_MODEL_SIZE` (default `medium`) — e.g. `small`, `large-v3` for higher accuracy.
 - `WHISPER_DEVICE` (default `cpu`) — set to `cuda` if a GPU is available.
 - `MAX_UPLOAD_MB` (default `500`) — max upload size.
-- `QWEN_ARMENIAN` (default `0`) — set to `1` to use Qwen3-ASR instead of whisper for `language=hy` requests. See the caveat above.
-- `QWEN_ASR_MODEL` (default `Qwen/Qwen3-ASR-0.6B-hf`) — e.g. `Qwen/Qwen3-ASR-1.7B-hf` for the larger variant.
 - `TTS_MODEL` (default `facebook/mms-tts-hyw`) — text-to-speech model.
 
 ## License

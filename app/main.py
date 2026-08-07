@@ -7,7 +7,6 @@ from fastapi.responses import Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from . import armenian_qwen
 from .transcription import transcribe_file
 from .tts import synthesize_speech
 
@@ -48,13 +47,7 @@ async def speech_to_text(file: UploadFile = File(...), language: str | None = No
             tmp.write(chunk)
 
     try:
-        if language == "hy" and armenian_qwen.is_enabled():
-            # Optional Qwen3-ASR path, opt-in via QWEN_ARMENIAN=1; otherwise
-            # falls through to whisper below.
-            text = armenian_qwen.transcribe_armenian_qwen(tmp_path)
-            detected_language = "hy"
-        else:
-            text, detected_language = transcribe_file(tmp_path, language=language)
+        text, detected_language = transcribe_file(tmp_path, language=language)
     except HTTPException:
         raise
     except Exception as exc:
