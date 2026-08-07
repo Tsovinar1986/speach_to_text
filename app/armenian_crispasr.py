@@ -4,15 +4,15 @@ import urllib.request
 from pathlib import Path
 
 # Optional Armenian-specific engine: CrispASR (ggml/C++ runtime) running the
-# GGUF-quantized NVIDIA FastConformer-Hybrid CTC model. Used only when
-# language="hy" is requested AND the binary + model are available; otherwise
-# app/main.py falls back to faster-whisper so this stays fully opt-in.
+# GGUF-quantized Qwen3-ASR model. Used only when language="hy" is requested
+# AND the binary + model are available; otherwise app/main.py falls back to
+# faster-whisper so this stays fully opt-in.
 BASE_DIR = Path(__file__).resolve().parent.parent
 DEFAULT_BIN = BASE_DIR / "crispasr" / "build" / "bin" / "crispasr"
-DEFAULT_MODEL = BASE_DIR / "models" / "stt-hy-fastconformer-hybrid-ctc-large-q4_k.gguf"
+DEFAULT_MODEL = BASE_DIR / "models" / "qwen3-asr-0.6b-q4_k.gguf"
 MODEL_URL = (
-    "https://huggingface.co/cstr/stt-hy-fastconformer-hybrid-ctc-large-GGUF/"
-    "resolve/main/stt-hy-fastconformer-hybrid-ctc-large-q4_k.gguf"
+    "https://huggingface.co/cstr/qwen3-asr-0.6b-GGUF/"
+    "resolve/main/qwen3-asr-0.6b-q4_k.gguf"
 )
 
 CRISPASR_BIN = Path(os.getenv("CRISPASR_BIN", str(DEFAULT_BIN)))
@@ -38,7 +38,7 @@ def transcribe_armenian_crispasr(path: str) -> str:
     result = subprocess.run(
         [
             str(CRISPASR_BIN),
-            "--backend", "fastconformer-ctc",
+            "--backend", "qwen3",
             "-m", str(CRISPASR_MODEL),
             "-f", path,
             "-nt",  # no timestamps, plain text only

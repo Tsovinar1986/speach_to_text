@@ -2,6 +2,3 @@ fastapi
 uvicorn[standard]
 python-multipart
 faster-whisper
-PyMuPDF
-pytesseract
-Pillow
