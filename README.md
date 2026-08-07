@@ -69,3 +69,7 @@ Environment variables:
 - `MAX_UPLOAD_MB` (default `500`) — max upload size.
 - `CRISPASR_BIN` (default `./crispasr/build/bin/crispasr`) — path to the CrispASR binary, if built.
 - `CRISPASR_MODEL` (default `./models/qwen3-asr-0.6b-q4_k.gguf`) — path to the Qwen3-ASR GGUF model (auto-downloaded on first use if missing).
+
+## License
+
+[MIT](LICENSE)
