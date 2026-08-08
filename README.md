@@ -3,8 +3,6 @@
 Standalone speech-to-text API for video. Send it a video file, get back JSON with the transcribed text.
 Uses [faster-whisper](https://github.com/SYSTRAN/faster-whisper) (OpenAI Whisper) for every language, one of the ~99 it supports out of the box. `language=hy` (Armenian) instead uses [Chillarmo/whisper-large-v3-turbo-armenian](https://huggingface.co/Chillarmo/whisper-large-v3-turbo-armenian) — `openai/whisper-large-v3-turbo` fine-tuned on Armenian, 15.31% WER / 2.86% CER, noticeably more accurate for Armenian than stock whisper. Any video format ffmpeg can read (MP4, MOV, MKV, AVI, WEBM, etc.) is supported.
 
-The app also exposes a text-to-speech endpoint for Western Armenian using [facebook/mms-tts-hyw](https://huggingface.co/facebook/mms-tts-hyw) (Meta MMS).
-
 ## System dependencies
 
 Besides Python, install:
@@ -37,7 +35,7 @@ make.bat clean
 
 The first request downloads the Whisper model (`medium` by default), so it can take a while. The server then listens on `http://localhost:8008` — override with `PORT`/`HOST` env vars (e.g. `PORT=9000 ./run.sh`) if 8008 is already taken by something else.
 
-A small web UI is served at `http://localhost:8008/` — pick a file, hit the button, get the text back, no console needed. It also has a text-to-speech box for Western Armenian.
+A small web UI is served at `http://localhost:8008/` — pick a file, hit the button, get the text back, no console needed.
 
 ## API
 
@@ -53,15 +51,6 @@ Response:
 { "text": "...", "language": "hy" }
 ```
 
-`POST /api/text-to-speech` — JSON body `{ "text": "..." }`, returns `audio/wav` (Western Armenian, via facebook/mms-tts-hyw).
-
-```
-curl -X POST http://localhost:8008/api/text-to-speech \
-  -H "Content-Type: application/json" \
-  -d '{"text": "Բարև ձեզ"}' \
-  --output speech.wav
-```
-
 ## Configuration
 
 Environment variables:
@@ -69,7 +58,6 @@ Environment variables:
 - `WHISPER_DEVICE` (default `cpu`) — set to `cuda` if a GPU is available.
 - `MAX_UPLOAD_MB` (default `500`) — max upload size.
 - `ARMENIAN_WHISPER_MODEL` (default `Chillarmo/whisper-large-v3-turbo-armenian`) — model used for `language=hy`.
-- `TTS_MODEL` (default `facebook/mms-tts-hyw`) — text-to-speech model.
 
 ## License
 

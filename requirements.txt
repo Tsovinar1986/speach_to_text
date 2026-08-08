@@ -4,4 +4,3 @@ python-multipart
 faster-whisper
 transformers
 torch
-numpy

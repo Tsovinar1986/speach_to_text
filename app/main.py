@@ -3,13 +3,11 @@ import tempfile
 from pathlib import Path
 
 from fastapi import FastAPI, File, HTTPException, UploadFile
-from fastapi.responses import Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from . import armenian_whisper
 from .transcription import transcribe_file
-from .tts import synthesize_speech
 
 app = FastAPI(title="Speech-to-Text Service")
 
@@ -22,10 +20,6 @@ CHUNK_SIZE = 1024 * 1024
 class TranscriptionResponse(BaseModel):
     text: str
     language: str | None = None
-
-
-class TextToSpeechRequest(BaseModel):
-    text: str
 
 
 @app.get("/health")
@@ -62,17 +56,6 @@ async def speech_to_text(file: UploadFile = File(...), language: str | None = No
         os.unlink(tmp_path)
 
     return TranscriptionResponse(text=text, language=detected_language)
-
-
-@app.post("/api/text-to-speech")
-async def text_to_speech(payload: TextToSpeechRequest):
-    if not payload.text.strip():
-        raise HTTPException(status_code=400, detail="Text is required")
-    try:
-        audio_bytes = synthesize_speech(payload.text)
-    except Exception as exc:
-        raise HTTPException(status_code=500, detail=str(exc)) from exc
-    return Response(content=audio_bytes, media_type="audio/wav")
 
 
 app.mount("/", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")
