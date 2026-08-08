@@ -31,5 +31,8 @@ def _get_pipeline():
 def transcribe_armenian(path: str) -> str:
     """Transcribe Armenian audio/video with the Chillarmo whisper-large-v3-turbo-armenian model."""
     pipe = _get_pipeline()
-    result = pipe(path, chunk_length_s=30, generate_kwargs={"language": "hy"})
+    # Sequential long-form generation (no chunk_length_s) uses Whisper's built-in
+    # fallback heuristics (temperature retry, compression-ratio/logprob checks) to
+    # catch hallucination loops on long audio; the chunked mode has no such guard.
+    result = pipe(path, return_timestamps=True, generate_kwargs={"language": "hy", "task": "transcribe"})
     return result["text"].strip()
