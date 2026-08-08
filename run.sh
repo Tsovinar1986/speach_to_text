@@ -7,4 +7,4 @@ if [ ! -d "venv" ]; then
   ./venv/bin/pip install -r requirements.txt
 fi
 
-./venv/bin/python3 -m uvicorn app.main:app --host 0.0.0.0 --port 8008
+./venv/bin/python3 -m uvicorn app.main:app --host "${HOST:-0.0.0.0}" --port "${PORT:-8008}"

@@ -7,4 +7,7 @@ if not exist venv (
     venv\Scripts\python.exe -m pip install -r requirements.txt
 )
 
-venv\Scripts\python.exe -m uvicorn app.main:app --host 0.0.0.0 --port 8008
+if "%HOST%"=="" set HOST=0.0.0.0
+if "%PORT%"=="" set PORT=8008
+
+venv\Scripts\python.exe -m uvicorn app.main:app --host %HOST% --port %PORT%

@@ -35,7 +35,7 @@ make.bat stop
 make.bat clean
 ```
 
-The first request downloads the Whisper model (`medium` by default), so it can take a while. The server then listens on `http://localhost:8008`.
+The first request downloads the Whisper model (`medium` by default), so it can take a while. The server then listens on `http://localhost:8008` — override with `PORT`/`HOST` env vars (e.g. `PORT=9000 ./run.sh`) if 8008 is already taken by something else.
 
 A small web UI is served at `http://localhost:8008/` — pick a file, hit the button, get the text back, no console needed. It also has a text-to-speech box for Western Armenian.
 
