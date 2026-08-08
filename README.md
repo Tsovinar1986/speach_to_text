@@ -1,7 +1,7 @@
 # speach_to_text
 
 Standalone speech-to-text API for video. Send it a video file, get back JSON with the transcribed text.
-Uses [faster-whisper](https://github.com/SYSTRAN/faster-whisper) (OpenAI Whisper, no training/fine-tuning needed) for every language, including Armenian — one of the ~99 languages it supports out of the box. Any video format ffmpeg can read (MP4, MOV, MKV, AVI, WEBM, etc.) is supported.
+Uses [faster-whisper](https://github.com/SYSTRAN/faster-whisper) (OpenAI Whisper) for every language, one of the ~99 it supports out of the box. `language=hy` (Armenian) instead uses [Chillarmo/whisper-large-v3-turbo-armenian](https://huggingface.co/Chillarmo/whisper-large-v3-turbo-armenian) — `openai/whisper-large-v3-turbo` fine-tuned on Armenian, 15.31% WER / 2.86% CER, noticeably more accurate for Armenian than stock whisper. Any video format ffmpeg can read (MP4, MOV, MKV, AVI, WEBM, etc.) is supported.
 
 The app also exposes a text-to-speech endpoint for Western Armenian using [facebook/mms-tts-hyw](https://huggingface.co/facebook/mms-tts-hyw) (Meta MMS).
 
@@ -65,9 +65,10 @@ curl -X POST http://localhost:8008/api/text-to-speech \
 ## Configuration
 
 Environment variables:
-- `WHISPER_MODEL_SIZE` (default `medium`) — e.g. `small`, `large-v3` for higher accuracy.
+- `WHISPER_MODEL_SIZE` (default `medium`) — e.g. `small`, `large-v3` for higher accuracy (non-Armenian languages).
 - `WHISPER_DEVICE` (default `cpu`) — set to `cuda` if a GPU is available.
 - `MAX_UPLOAD_MB` (default `500`) — max upload size.
+- `ARMENIAN_WHISPER_MODEL` (default `Chillarmo/whisper-large-v3-turbo-armenian`) — model used for `language=hy`.
 - `TTS_MODEL` (default `facebook/mms-tts-hyw`) — text-to-speech model.
 
 ## License

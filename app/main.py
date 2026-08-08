@@ -7,6 +7,7 @@ from fastapi.responses import Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
+from . import armenian_whisper
 from .transcription import transcribe_file
 from .tts import synthesize_speech
 
@@ -47,7 +48,12 @@ async def speech_to_text(file: UploadFile = File(...), language: str | None = No
             tmp.write(chunk)
 
     try:
-        text, detected_language = transcribe_file(tmp_path, language=language)
+        if language == "hy":
+            # Fine-tuned Armenian model, more accurate than stock whisper for hy.
+            text = armenian_whisper.transcribe_armenian(tmp_path)
+            detected_language = "hy"
+        else:
+            text, detected_language = transcribe_file(tmp_path, language=language)
     except HTTPException:
         raise
     except Exception as exc:
