@@ -3,6 +3,8 @@
 Standalone speech-to-text API for video. Send it a video file, get back JSON with the transcribed text.
 Uses [faster-whisper](https://github.com/SYSTRAN/faster-whisper) (OpenAI Whisper) for every language, one of the ~99 it supports out of the box. `language=hy` (Armenian) instead uses [Chillarmo/whisper-large-v3-turbo-armenian](https://huggingface.co/Chillarmo/whisper-large-v3-turbo-armenian) — `openai/whisper-large-v3-turbo` fine-tuned on Armenian, 15.31% WER / 2.86% CER, noticeably more accurate for Armenian than stock whisper. Any video format ffmpeg can read (MP4, MOV, MKV, AVI, WEBM, etc.) is supported.
 
+For Armenian results, the transcript is then rewritten from standard/literary Eastern Armenian into colloquial spoken Yerevan Armenian, via a local [Ollama](https://ollama.com) model (default `qwen2.5:7b`). Requires an Ollama server running locally with that model pulled (`ollama pull qwen2.5:7b`); if Ollama isn't reachable, the request fails rather than silently skipping the rewrite. Quality depends on the model's Armenian ability, which is limited — expect a conservative rewrite rather than a bold dialect transformation.
+
 ## System dependencies
 
 Besides Python, install:
@@ -58,6 +60,8 @@ Environment variables:
 - `WHISPER_DEVICE` (default `cpu`) — set to `cuda` if a GPU is available.
 - `MAX_UPLOAD_MB` (default `500`) — max upload size.
 - `ARMENIAN_WHISPER_MODEL` (default `Chillarmo/whisper-large-v3-turbo-armenian`) — model used for `language=hy`.
+- `OLLAMA_URL` (default `http://localhost:11434/api/chat`) — Ollama chat endpoint used for the spoken-Yerevan rewrite.
+- `OLLAMA_MODEL` (default `qwen2.5:7b`) — Ollama model used for the rewrite.
 
 ## License
 

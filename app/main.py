@@ -6,7 +6,7 @@ from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from . import armenian_whisper
+from . import armenian_whisper, yerevan_dialect
 from .transcription import transcribe_file
 
 app = FastAPI(title="Speech-to-Text Service")
@@ -48,6 +48,11 @@ async def speech_to_text(file: UploadFile = File(...), language: str | None = No
             detected_language = "hy"
         else:
             text, detected_language = transcribe_file(tmp_path, language=language)
+
+        if detected_language == "hy":
+            # Rewrite the standard/literary transcript as colloquial spoken
+            # Yerevan Armenian, via a local Ollama model.
+            text = yerevan_dialect.to_yerevan_dialect(text)
     except HTTPException:
         raise
     except Exception as exc:
